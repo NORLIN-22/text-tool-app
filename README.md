@@ -29,7 +29,7 @@ This project is a simple text tool application that allows users to input words 
 
 ## 🚀 在线使用
 
-访问：[https://yourusername.github.io/text-tool-app/](https://yourusername.github.io/text-tool-app/)
+访问：[https://NORLIN-22.github.io/text-tool-app/](https://NORLIN-22.github.io/text-tool-app/)
 
 ## 📖 使用指南
 
@@ -52,7 +52,7 @@ This project is a simple text tool application that allows users to input words 
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/text-tool-app.git
+git clone https://github.com/NORLIN-22/text-tool-app.git
 
 # 进入项目目录
 cd text-tool-app
