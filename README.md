@@ -58,7 +58,6 @@ git clone https://github.com/NORLIN-22/text-tool-app.git
 cd text-tool-app
 
 # 启动本地服务器
-cd src
 python -m http.server 3000
 
 # 或使用 Node.js
@@ -71,11 +70,10 @@ npx serve .
 
 ```
 text-tool-app/
-├── src/
-│   ├── index.html          # 主应用页面
-│   ├── danbooru-helper.html # Danbooru 书签助手页面
-│   ├── main.js             # 主要 JavaScript 逻辑
-│   └── styles.css          # 样式文件
+├── index.html              # 主应用页面
+├── danbooru-helper.html    # Danbooru 书签助手页面
+├── main.js                 # 主要 JavaScript 逻辑
+├── styles.css              # 样式文件
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml      # GitHub Pages 自动部署
