@@ -455,6 +455,165 @@ h1 {
     box-sizing: border-box;
 }
 
+/* 输入工具容器样式 */
+.input-tools-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.input-tools-container textarea {
+    flex: 2;
+    margin: 0;
+}
+
+.input-tools {
+    flex: 1;
+    min-width: 280px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.tool-section {
+    margin-bottom: 20px;
+}
+
+.tool-section:last-child {
+    margin-bottom: 0;
+}
+
+.tool-section h4 {
+    margin: 0 0 12px 0;
+    color: #3a7bd5;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.replace-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.replace-inputs input {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.replace-inputs button {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 14px;
+    background: #3a7bd5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.replace-inputs button:hover {
+    background: #2968c4;
+}
+
+.extract-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.extract-tools button {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 14px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.extract-tools button:hover {
+    background: #218838;
+}
+
+.extract-preview {
+    margin-top: 12px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.preview-content {
+    font-size: 14px;
+}
+
+.preview-content strong {
+    color: #3a7bd5;
+    display: block;
+    margin-bottom: 8px;
+}
+
+#extractedTags {
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 8px 0 12px 0;
+    min-height: 40px;
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #495057;
+}
+
+#addExtractedBtn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+#addExtractedBtn:hover {
+    background: #218838;
+}
+
+#cancelExtractBtn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#cancelExtractBtn:hover {
+    background: #5a6268;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .input-tools-container {
+        flex-direction: column;
+    }
+    
+    .input-tools {
+        min-width: auto;
+    }
+}
+
 input[type="text"], textarea {
     width: 100%;
     padding: 12px;

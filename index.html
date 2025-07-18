@@ -40,7 +40,38 @@
         
         <div class="main-content">
             <div class="card">
-                <textarea id="inputText" placeholder="请输入文本..." rows="5"></textarea>
+                <div class="input-tools-container">
+                    <textarea id="inputText" placeholder="请输入文本..." rows="5"></textarea>
+                    <div class="input-tools">
+                        <!-- 文本替换工具 -->
+                        <div class="tool-section">
+                            <h4>文本替换</h4>
+                            <div class="replace-inputs">
+                                <input type="text" id="findText" placeholder="查找文本">
+                                <input type="text" id="replaceText" placeholder="替换为">
+                                <button id="replaceBtn">替换</button>
+                                <button id="replaceAllBtn">全部替换</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 自动标签提取工具 -->
+                        <div class="tool-section">
+                            <h4>标签提取</h4>
+                            <div class="extract-tools">
+                                <button id="extractTagsFromTextBtn">从文本提取标签</button>
+                                <button id="cleanDanbooruTextBtn">清理 Danbooru 格式</button>
+                            </div>
+                            <div class="extract-preview" id="extractPreview" style="display: none;">
+                                <div class="preview-content">
+                                    <strong>提取到的标签：</strong>
+                                    <div id="extractedTags"></div>
+                                    <button id="addExtractedBtn">添加到标签库</button>
+                                    <button id="cancelExtractBtn">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="punctuation-bar">
                     <div class="punct-status">
                         <span id="autoModeStatus">自动模式：关闭</span>

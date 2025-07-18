@@ -10,6 +10,210 @@ const outputText = document.getElementById('outputText');
 let autoModeEnabled = false;
 let autoModeSymbol = '';
 
+// 文本替换功能
+function replaceText(replaceAll = false) {
+    const findText = document.getElementById('findText').value;
+    const replaceText = document.getElementById('replaceText').value;
+    const inputText = document.getElementById('inputText');
+    
+    if (!findText) {
+        alert('请输入要查找的文本！');
+        return;
+    }
+    
+    const currentText = inputText.value;
+    let newText;
+    
+    if (replaceAll) {
+        // 全部替换
+        newText = currentText.split(findText).join(replaceText);
+        const count = (currentText.match(new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+        if (count > 0) {
+            showReplaceNotification(`已替换 ${count} 处文本`);
+        } else {
+            alert('未找到要替换的文本！');
+            return;
+        }
+    } else {
+        // 替换第一个
+        const index = currentText.indexOf(findText);
+        if (index !== -1) {
+            newText = currentText.substring(0, index) + replaceText + currentText.substring(index + findText.length);
+            showReplaceNotification('已替换 1 处文本');
+        } else {
+            alert('未找到要替换的文本！');
+            return;
+        }
+    }
+    
+    inputText.value = newText;
+    document.getElementById('outputText').textContent = newText;
+    
+    // 清空查找框
+    document.getElementById('findText').value = '';
+    document.getElementById('replaceText').value = '';
+}
+
+// 从文本中提取标签
+function extractTagsFromText() {
+    const inputText = document.getElementById('inputText').value.trim();
+    
+    if (!inputText) {
+        alert('请先输入文本！');
+        return;
+    }
+    
+    // 检测是否是 Danbooru 格式
+    const isDanbooruFormat = inputText.includes('?') && /\d+[kmgtKMGT]/.test(inputText);
+    
+    let extractedTags = [];
+    
+    if (isDanbooruFormat) {
+        // 处理 Danbooru 格式
+        extractedTags = parseDanbooruTagList(inputText);
+    } else {
+        // 处理普通文本
+        extractedTags = inputText
+            .split(/[,\s\n]+/)
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
+    }
+    
+    // 清理和过滤标签
+    const cleanedTags = extractedTags
+        .map(tag => cleanTagText(tag))
+        .filter(tag => tag && isValidTag(tag));
+    
+    if (cleanedTags.length > 0) {
+        showExtractPreview(cleanedTags);
+    } else {
+        alert('未找到有效的标签！');
+    }
+}
+
+// 清理 Danbooru 格式文本
+function cleanDanbooruText() {
+    const inputText = document.getElementById('inputText');
+    const text = inputText.value.trim();
+    
+    if (!text) {
+        alert('请先输入文本！');
+        return;
+    }
+    
+    // 解析 Danbooru 标签列表
+    const tags = parseDanbooruTagList(text);
+    const cleanedTags = tags
+        .map(tag => cleanTagText(tag))
+        .filter(tag => tag && isValidTag(tag));
+    
+    if (cleanedTags.length > 0) {
+        // 将清理后的标签放回输入框
+        const cleanedText = cleanedTags.join('\n');
+        inputText.value = cleanedText;
+        document.getElementById('outputText').textContent = cleanedText;
+        
+        showCleanNotification(cleanedTags.length, tags.length);
+    } else {
+        alert('未找到有效的标签！');
+    }
+}
+
+// 显示提取预览
+function showExtractPreview(tags) {
+    const preview = document.getElementById('extractPreview');
+    const extractedTagsDiv = document.getElementById('extractedTags');
+    
+    extractedTagsDiv.textContent = tags.join(', ');
+    preview.style.display = 'block';
+    
+    // 存储提取的标签供后续使用
+    window.currentExtractedTags = tags;
+}
+
+// 添加提取的标签到标签库
+function addExtractedTags() {
+    const cat = getCategoryByPath(currentPath);
+    if (!cat || !window.currentExtractedTags) return;
+    
+    let addedCount = 0;
+    window.currentExtractedTags.forEach(tag => {
+        if (!cat.tags.includes(tag)) {
+            cat.tags.push(tag);
+            addedCount++;
+        }
+    });
+    
+    if (addedCount > 0) {
+        renderTags();
+        saveDataToStorage();
+        showDetailedAddNotification(addedCount, window.currentExtractedTags.length, window.currentExtractedTags);
+    } else {
+        alert('所有标签都已存在！');
+    }
+    
+    // 隐藏预览
+    cancelExtract();
+}
+
+// 取消提取
+function cancelExtract() {
+    document.getElementById('extractPreview').style.display = 'none';
+    window.currentExtractedTags = null;
+}
+
+// 显示替换通知
+function showReplaceNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #3a7bd5;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        z-index: 1000;
+        font-size: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    `;
+    
+    notification.textContent = `✓ ${message}`;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
+}
+
+// 显示清理通知
+function showCleanNotification(cleaned, total) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        z-index: 1000;
+        font-size: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    `;
+    
+    notification.textContent = `🧹 已清理 ${total} 项，提取出 ${cleaned} 个有效标签`;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 4000);
+}
+
 // 分隔条拖拽功能
 document.addEventListener('DOMContentLoaded', function() {
     // 重新获取标点符号按钮
@@ -132,6 +336,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化状态显示
     updateAutoModeStatus();
+    
+    // 文本替换功能事件监听器
+    document.getElementById('replaceBtn').addEventListener('click', () => replaceText(false));
+    document.getElementById('replaceAllBtn').addEventListener('click', () => replaceText(true));
+    
+    // 标签提取功能事件监听器
+    document.getElementById('extractTagsFromTextBtn').addEventListener('click', extractTagsFromText);
+    document.getElementById('cleanDanbooruTextBtn').addEventListener('click', cleanDanbooruText);
+    document.getElementById('addExtractedBtn').addEventListener('click', addExtractedTags);
+    document.getElementById('cancelExtractBtn').addEventListener('click', cancelExtract);
     
     // 处理输入事件，在单词后自动添加标点符号
     inputText.addEventListener('input', (e) => {
