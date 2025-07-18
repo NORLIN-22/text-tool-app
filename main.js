@@ -13,7 +13,7 @@ let autoModeSymbol = '';
 // 文本替换功能
 function replaceText(replaceAll = false) {
     const findText = document.getElementById('findText').value;
-    const replaceText = document.getElementById('replaceText').value;
+    const replaceTextValue = document.getElementById('replaceText').value;
     const inputText = document.getElementById('inputText');
     
     if (!findText) {
@@ -26,7 +26,7 @@ function replaceText(replaceAll = false) {
     
     if (replaceAll) {
         // 全部替换
-        newText = currentText.split(findText).join(replaceText);
+        newText = currentText.split(findText).join(replaceTextValue);
         const count = (currentText.match(new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
         if (count > 0) {
             showReplaceNotification(`已替换 ${count} 处文本`);
@@ -38,7 +38,7 @@ function replaceText(replaceAll = false) {
         // 替换第一个
         const index = currentText.indexOf(findText);
         if (index !== -1) {
-            newText = currentText.substring(0, index) + replaceText + currentText.substring(index + findText.length);
+            newText = currentText.substring(0, index) + replaceTextValue + currentText.substring(index + findText.length);
             showReplaceNotification('已替换 1 处文本');
         } else {
             alert('未找到要替换的文本！');
@@ -338,14 +338,55 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAutoModeStatus();
     
     // 文本替换功能事件监听器
-    document.getElementById('replaceBtn').addEventListener('click', () => replaceText(false));
-    document.getElementById('replaceAllBtn').addEventListener('click', () => replaceText(true));
+    const replaceBtn = document.getElementById('replaceBtn');
+    const replaceAllBtn = document.getElementById('replaceAllBtn');
+    const extractTagsFromTextBtn = document.getElementById('extractTagsFromTextBtn');
+    const cleanDanbooruTextBtn = document.getElementById('cleanDanbooruTextBtn');
+    const addExtractedBtn = document.getElementById('addExtractedBtn');
+    const cancelExtractBtn = document.getElementById('cancelExtractBtn');
+    
+    if (replaceBtn) {
+        replaceBtn.addEventListener('click', () => replaceText(false));
+        console.log('✓ 替换按钮事件监听器已添加');
+    } else {
+        console.error('❌ 找不到替换按钮元素');
+    }
+    
+    if (replaceAllBtn) {
+        replaceAllBtn.addEventListener('click', () => replaceText(true));
+        console.log('✓ 全部替换按钮事件监听器已添加');
+    } else {
+        console.error('❌ 找不到全部替换按钮元素');
+    }
     
     // 标签提取功能事件监听器
-    document.getElementById('extractTagsFromTextBtn').addEventListener('click', extractTagsFromText);
-    document.getElementById('cleanDanbooruTextBtn').addEventListener('click', cleanDanbooruText);
-    document.getElementById('addExtractedBtn').addEventListener('click', addExtractedTags);
-    document.getElementById('cancelExtractBtn').addEventListener('click', cancelExtract);
+    if (extractTagsFromTextBtn) {
+        extractTagsFromTextBtn.addEventListener('click', extractTagsFromText);
+        console.log('✓ 提取标签按钮事件监听器已添加');
+    } else {
+        console.error('❌ 找不到提取标签按钮元素');
+    }
+    
+    if (cleanDanbooruTextBtn) {
+        cleanDanbooruTextBtn.addEventListener('click', cleanDanbooruText);
+        console.log('✓ 清理Danbooru格式按钮事件监听器已添加');
+    } else {
+        console.error('❌ 找不到清理Danbooru格式按钮元素');
+    }
+    
+    if (addExtractedBtn) {
+        addExtractedBtn.addEventListener('click', addExtractedTags);
+        console.log('✓ 添加提取标签按钮事件监听器已添加');
+    } else {
+        console.error('❌ 找不到添加提取标签按钮元素');
+    }
+    
+    if (cancelExtractBtn) {
+        cancelExtractBtn.addEventListener('click', cancelExtract);
+        console.log('✓ 取消提取按钮事件监听器已添加');
+    } else {
+        console.error('❌ 找不到取消提取按钮元素');
+    }
     
     // 处理输入事件，在单词后自动添加标点符号
     inputText.addEventListener('input', (e) => {
