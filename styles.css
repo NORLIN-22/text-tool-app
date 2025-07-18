@@ -435,13 +435,15 @@ h1 {
     padding: 40px 32px;
     box-sizing: border-box;
     min-width: 0;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
+    overflow-x: hidden;
 }
 
 .card, .tag-library {
-    max-width: 700px;
+    max-width: 100%;
     margin: 0 auto 32px auto;
+    width: 100%;
 }
 
 .card {
@@ -451,7 +453,6 @@ h1 {
     padding: 0;
     margin-bottom: 32px;
     width: 100%;
-    max-width: 700px;
     box-sizing: border-box;
 }
 
@@ -461,20 +462,25 @@ h1 {
     gap: 20px;
     align-items: flex-start;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .input-tools-container textarea {
     flex: 2;
     margin: 0;
+    min-height: 120px;
+    resize: vertical;
 }
 
 .input-tools {
     flex: 1;
     min-width: 280px;
+    max-width: 350px;
     background: #f8f9fa;
     border: 1px solid #e9ecef;
     border-radius: 8px;
     padding: 16px;
+    box-sizing: border-box;
 }
 
 .tool-section {
@@ -490,6 +496,8 @@ h1 {
     color: #3a7bd5;
     font-size: 16px;
     font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 6px;
 }
 
 .replace-inputs {
@@ -504,22 +512,36 @@ h1 {
     font-size: 14px;
     border: 1px solid #ced4da;
     border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.replace-inputs input:focus {
+    border-color: #3a7bd5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.1);
 }
 
 .replace-inputs button {
     margin: 0;
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
     background: #3a7bd5;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    font-weight: 500;
 }
 
 .replace-inputs button:hover {
     background: #2968c4;
+    transform: translateY(-1px);
+}
+
+.replace-inputs button:active {
+    transform: translateY(0);
 }
 
 .extract-tools {
@@ -530,18 +552,24 @@ h1 {
 
 .extract-tools button {
     margin: 0;
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
     background: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    font-weight: 500;
 }
 
 .extract-tools button:hover {
     background: #218838;
+    transform: translateY(-1px);
+}
+
+.extract-tools button:active {
+    transform: translateY(0);
 }
 
 .extract-preview {
@@ -550,6 +578,7 @@ h1 {
     background: white;
     border: 1px solid #dee2e6;
     border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .preview-content {
@@ -560,29 +589,34 @@ h1 {
     color: #3a7bd5;
     display: block;
     margin-bottom: 8px;
+    font-weight: 600;
 }
 
 #extractedTags {
     background: #f8f9fa;
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
     margin: 8px 0 12px 0;
     min-height: 40px;
-    font-family: monospace;
+    font-family: 'Segoe UI', monospace;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.6;
     color: #495057;
+    border: 1px solid #e9ecef;
+    word-wrap: break-word;
 }
 
 #addExtractedBtn {
     background: #28a745;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     margin-right: 8px;
+    transition: background 0.2s;
+    font-weight: 500;
 }
 
 #addExtractedBtn:hover {
@@ -593,10 +627,12 @@ h1 {
     background: #6c757d;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
+    transition: background 0.2s;
+    font-weight: 500;
 }
 
 #cancelExtractBtn:hover {
@@ -604,13 +640,122 @@ h1 {
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 20px 16px;
+    }
+    
+    .input-tools-container {
+        gap: 15px;
+    }
+    
+    .input-tools {
+        min-width: 240px;
+        max-width: 300px;
+    }
+}
+
 @media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+        overflow-y: auto;
+        border-right: none;
+        border-bottom: 1px solid #e0eafc;
+    }
+    
+    .resizer {
+        display: none;
+    }
+    
+    .main-content {
+        padding: 16px 12px;
+        max-width: none;
+    }
+    
     .input-tools-container {
         flex-direction: column;
+        gap: 15px;
+    }
+    
+    .input-tools-container textarea {
+        min-height: 100px;
     }
     
     .input-tools {
         min-width: auto;
+        max-width: none;
+        width: 100%;
+    }
+    
+    .card, .tag-library {
+        max-width: none;
+        margin: 0 0 20px 0;
+    }
+    
+    .tool-section h4 {
+        font-size: 15px;
+    }
+    
+    .replace-inputs input,
+    .replace-inputs button,
+    .extract-tools button {
+        font-size: 16px; /* 防止iOS缩放 */
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        padding: 16px 12px;
+    }
+    
+    .main-content {
+        padding: 12px 8px;
+    }
+    
+    .input-tools {
+        padding: 12px;
+    }
+    
+    .tool-section {
+        margin-bottom: 16px;
+    }
+    
+    .tool-section h4 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .replace-inputs {
+        gap: 6px;
+    }
+    
+    .extract-tools {
+        gap: 6px;
+    }
+    
+    .replace-inputs input,
+    .replace-inputs button,
+    .extract-tools button {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+    
+    #extractedTags {
+        font-size: 12px;
+        padding: 8px;
+    }
+    
+    #addExtractedBtn,
+    #cancelExtractBtn {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
 
@@ -623,22 +768,27 @@ input[type="text"], textarea {
     font-size: 18px;
     padding: 16px;
     font-family: 'Segoe UI', 'Arial', sans-serif;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: #3a7bd5;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
 }
 
 textarea {
-    resize: none;
+    resize: vertical;
     border: 1px solid #b2bec3;
     border-radius: 10px;
     padding: 16px;
     font-size: 18px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     font-family: 'Segoe UI', 'Arial', sans-serif;
     line-height: 1.5;
-}
-
-textarea:focus {
-    border-color: #3a7bd5;
+    min-height: 120px;
 }
 
 button, .toggle-btn {
