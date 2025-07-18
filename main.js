@@ -244,6 +244,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// 数据持久化存储
+function saveDataToStorage() {
+    const data = {
+        categories: categories,
+        recycleBin: recycleBin,
+        currentPath: currentPath,
+        recycleBinExpanded: recycleBinExpanded
+    };
+    try {
+        localStorage.setItem('textToolAppData', JSON.stringify(data));
+    } catch (error) {
+        console.warn('无法保存数据到本地存储:', error);
+    }
+}
+
+function loadDataFromStorage() {
+    try {
+        const savedData = localStorage.getItem('textToolAppData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            if (data.categories && Array.isArray(data.categories)) {
+                categories = data.categories;
+            }
+            if (data.recycleBin && Array.isArray(data.recycleBin)) {
+                recycleBin = data.recycleBin;
+            }
+            if (data.currentPath && Array.isArray(data.currentPath)) {
+                currentPath = data.currentPath;
+            }
+            if (typeof data.recycleBinExpanded === 'boolean') {
+                recycleBinExpanded = data.recycleBinExpanded;
+            }
+            return true;
+        }
+    } catch (error) {
+        console.warn('无法从本地存储加载数据:', error);
+    }
+    return false;
+}
+
 let categories = [
     {
         name: '米哈游', 
@@ -277,6 +317,7 @@ function toggleCategory(e, path) {
     if (cat && cat.children && cat.children.length > 0) {
         cat.expanded = !cat.expanded;
         categoryTree.innerHTML = renderCategoryTree();
+        saveDataToStorage(); // 保存数据
     }
 }
 
@@ -315,14 +356,12 @@ window.selectCategory = function(e, path) {
     currentPath = path;
     categoryTree.innerHTML = renderCategoryTree();
     renderTags();
+    saveDataToStorage(); // 保存数据
     const cat = getCategoryByPath(path);
     currentCategoryName.textContent = cat ? cat.name + ' 标签库' : '常用标签库';
 };
 
 window.toggleCategory = toggleCategory;
-
-categoryTree.innerHTML = renderCategoryTree();
-renderTags();
 
 function renderTags() {
     const cat = getCategoryByPath(currentPath);
@@ -344,6 +383,7 @@ window.removeTag = function(tagIdx) {
     if (cat && cat.tags) {
         cat.tags.splice(tagIdx, 1);
         renderTags();
+        saveDataToStorage(); // 保存数据
     }
 };
 
@@ -354,6 +394,7 @@ newTagInput.addEventListener('keydown', (e) => {
         if (val && cat && !cat.tags.includes(val)) {
             cat.tags.push(val);
             renderTags();
+            saveDataToStorage(); // 保存数据
         }
         newTagInput.value = '';
     }
@@ -396,6 +437,7 @@ function addQuickTag() {
         
         if (addedCount > 0) {
             renderTags();
+            saveDataToStorage(); // 保存数据
             // 显示详细的添加结果
             showDetailedAddNotification(addedCount, tags.length, filteredTags);
         } else if (filteredTags.length > 0) {
@@ -574,6 +616,7 @@ async function extractTagsFromDanbooru() {
                 
                 if (addedCount > 0) {
                     renderTags();
+                    saveDataToStorage(); // 保存数据
                     showExtractionNotification(addedCount, urlTags.length);
                     
                     // 如果提取的标签数量较少，显示更多选项
@@ -933,6 +976,7 @@ newCategoryInput.addEventListener('keydown', (e) => {
         if (val) {
             categories.push({ name: val, tags: [], children: [], expanded: true });
             categoryTree.innerHTML = renderCategoryTree();
+            saveDataToStorage(); // 保存数据
             newCategoryInput.value = '';
         }
     }
@@ -998,6 +1042,7 @@ function addSubFolder() {
     category.expanded = true; // 展开父文件夹
     categoryTree.innerHTML = renderCategoryTree();
     renderRecycleBin();
+    saveDataToStorage(); // 保存数据
     hideContextMenu();
 }
 
@@ -1026,6 +1071,7 @@ function deleteFolder() {
         categoryTree.innerHTML = renderCategoryTree();
         renderTags();
         renderRecycleBin();
+        saveDataToStorage(); // 保存数据
         hideContextMenu();
     }
 }
@@ -1130,6 +1176,7 @@ function getChildrenCount(category) {
 function toggleRecycleBin() {
     recycleBinExpanded = !recycleBinExpanded;
     renderRecycleBin();
+    saveDataToStorage(); // 保存数据
 }
 
 function addParentFolder() {
@@ -1148,6 +1195,7 @@ function addParentFolder() {
     
     categoryTree.innerHTML = renderCategoryTree();
     renderRecycleBin();
+    saveDataToStorage(); // 保存数据
 }
 
 function restoreFolder(index) {
@@ -1169,14 +1217,38 @@ function restoreFolder(index) {
     
     categoryTree.innerHTML = renderCategoryTree();
     renderRecycleBin();
+    saveDataToStorage(); // 保存数据
 }
 
 function clearRecycleBin() {
     if (confirm('确定要清空回收站吗？此操作不可恢复。')) {
         recycleBin.length = 0;
         renderRecycleBin();
+        saveDataToStorage(); // 保存数据
     }
 }
+
+// 初始化应用
+document.addEventListener('DOMContentLoaded', function() {
+    // 加载保存的数据
+    loadDataFromStorage();
+    
+    // 初始化界面
+    categoryTree.innerHTML = renderCategoryTree();
+    renderTags();
+    renderRecycleBin();
+    
+    // 设置回收站展开状态
+    const recycleBinToggle = document.getElementById('recycleBinToggle');
+    const recycledItems = document.getElementById('recycledItems');
+    if (recycleBinExpanded) {
+        recycleBinToggle.classList.add('expanded');
+        recycledItems.style.display = 'block';
+    } else {
+        recycleBinToggle.classList.remove('expanded');
+        recycledItems.style.display = 'none';
+    }
+});
 
 // 全局事件监听器
 document.addEventListener('click', hideContextMenu);
@@ -1187,9 +1259,6 @@ document.getElementById('deleteFolder').addEventListener('click', deleteFolder);
 document.getElementById('clearRecycleBin').addEventListener('click', clearRecycleBin);
 document.getElementById('addParentFolder').addEventListener('click', addParentFolder);
 document.getElementById('recycleBinToggle').addEventListener('click', toggleRecycleBin);
-
-// 初始化回收站
-renderRecycleBin();
 
 // 暴露函数到全局
 window.showContextMenu = showContextMenu;
